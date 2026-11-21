@@ -1,8 +1,6 @@
 # sandbox-wasm
 
-JavaScript から WebAssembly を呼び出す練習用のプロジェクト。
-
-> 学習の記録として残しているリポジトリです。プログラムは書いた当時のままで、リファクタリングや修正は行っていません。
+JavaScript から WebAssembly を呼び出す方法の技術検証と、プロジェクトのひな形を兼ねたリポジトリ。
 
 ## 概要
 
@@ -12,7 +10,7 @@ JavaScript から WebAssembly を呼び出す練習用のプロジェクト。
 | 時期 | 2024年4月 |
 | 言語 | WebAssembly（テキスト形式）、JavaScript |
 
-WebAssembly のモジュールをテキスト形式（`.wat`）で書き、バイナリ（`.wasm`）に変換して、Node.js の JavaScript から読み込む練習である。JavaScript の関数、変数、メモリを WebAssembly に渡す方法と、WebAssembly の関数を JavaScript から呼ぶ方法を試している。
+WebAssembly のモジュールをテキスト形式（`.wat`）で書き、バイナリ（`.wasm`）に変換して、Node.js の JavaScript から読み込む方法を検証したものである。JavaScript の関数、変数、メモリを WebAssembly に渡す方法と、WebAssembly の関数を JavaScript から呼ぶ方法を試している。
 
 ## ディレクトリ構成
 

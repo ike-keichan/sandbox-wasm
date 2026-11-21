@@ -2,8 +2,8 @@
 (module
   ;; JavaScript の関数を、WebAssembly の関数として使えるようにする。
   ;; "env" "print_string" は、JavaScript から渡されるオブジェクトの env.print_string を指す。
-  ;; この関数は、i32 型の引数を1つ受け取る（文字列の長さ）。
-  (import "env" "print_string" (func $print_string (param i32)))
+  ;; この関数は、i32 型の引数を2つ受け取る（文字列の開始位置と、長さ）。
+  (import "env" "print_string" (func $print_string (param i32 i32)))
 
   ;; JavaScript が用意した線形メモリを使う。大きさは1ページ（64KiB）以上。
   (import "env" "memory" (memory 1))
@@ -18,8 +18,9 @@
   (data (global.get $start_string_index) "hello world!")
 
   ;; JavaScript から呼べる関数 "hello_world" を公開する。
-  ;; 呼ばれたら、文字列の長さを引数にして、$print_string を呼ぶ。
+  ;; 呼ばれたら、文字列の開始位置と長さを引数にして、$print_string を呼ぶ。
+  ;; 位置も渡すので、JavaScript は、どこを読めばよいかを覚えておかなくてよい。
   (func (export "hello_world")
-    (call $print_string (global.get $string_length))
+    (call $print_string (global.get $start_string_index) (global.get $string_length))
   )
 )

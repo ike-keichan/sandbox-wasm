@@ -146,18 +146,16 @@ $ make run
 次のように表示されれば、正常です。
 
 ```zsh
-docker compose run --rm app pnpm build
-$ node scripts/build.js
+docker compose run --rm app pnpm start
+$ node scripts/build.js && node src/main.js
 built src/hello/hello.wasm
 1 file(s) built
-docker compose run --rm app pnpm start
-$ node src/main.js
 hello world!
 ```
 
 最後の `hello world!` は、WebAssembly が持っている文字列を、JavaScript が受け取って表示したものです。
 
-`make run` は、実行の前に、毎回 WebAssembly への変換を行います。`.wat` を書き換えたあとに、変換を忘れることがありません。
+`make run` と `make js/test` は、実行の前に、毎回 WebAssembly への変換を行います。`.wat` を書き換えたあとに、変換を忘れることがありません。
 
 このリポジトリは、サーバーのように動き続けるものではありません。コマンドを実行するたびに、コンテナが起動して、終わると止まります。止める操作は要りません。
 
@@ -169,8 +167,10 @@ hello world!
 
 ```zsh
 $ make js/test
-✔ helloWorld は、WebAssembly が持つ文字列を JavaScript に渡す (6.135834ms)
-✔ helloWorld は、呼ぶたびに文字列を渡す (1.09075ms)
+built src/hello/hello.wasm
+1 file(s) built
+✔ helloWorld は、WebAssembly が持つ文字列を JavaScript に渡す (2.895916ms)
+✔ helloWorld は、呼ぶたびに文字列を渡す (0.903375ms)
 ℹ tests 2
 ℹ pass 2
 ℹ fail 0
@@ -229,13 +229,29 @@ Docker Desktop が起動していません。Docker Desktop を起動して、�
 
 ### `parseWat failed` と表示される
 
-`.wat` の書き間違いです。直後に、ファイル名、行番号、桁の番号が表示されます。
+`.wat` の書き方（かっこの対応、命令の名前など）の誤りです。直後に、ファイル名、行番号、桁の番号、理由が表示されます。
 
 ```zsh
-src/hello/hello.wat:9:1: error: unexpected char
+parseWat failed:
+src/hello/hello.wat:18:4: error: unexpected token "data", expected an instr.
+  (data (global.get $start_string_index) "hello world!")
+   ^^^^
 ```
 
-この例では、`src/hello/hello.wat` の9行目の1桁目に、問題があります。
+この例では、`src/hello/hello.wat` の18行目の4桁目で、問題が見つかっています。原因は、表示された行より前にあることがあります（この例は、1つ前の定義で、閉じるかっこが足りていませんでした）。
+
+### `validate failed` と表示される
+
+書き方は正しいものの、型や数が合っていない誤りです。
+
+```zsh
+validate failed:
+src/hello/hello.wat:24:6: error: type mismatch in call, expected [i32, i32] but got [i32]
+    (call $print_string (global.get $string_length))
+     ^^^^
+```
+
+この例では、引数を2つ受け取る関数に、1つしか渡していません。
 
 ### `ENOENT: no such file or directory` と、`.wasm` の名前が表示される
 

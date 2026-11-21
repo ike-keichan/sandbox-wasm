@@ -19,5 +19,5 @@ test('helloWorld は、呼ぶたびに文字列を渡す', async () => {
   helloWorld();
   helloWorld();
 
-  assert.equal(printed.length, 2);
+  assert.deepEqual(printed, ['hello world!', 'hello world!']);
 });

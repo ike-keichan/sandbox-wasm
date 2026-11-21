@@ -50,8 +50,8 @@ sequenceDiagram
     JS->>WASM: 読み込み（メモリ、書き込む位置、表示用の関数を渡す）
     Note over WASM: メモリに "hello world!" を書き込む
     JS->>WASM: hello_world() を呼ぶ
-    WASM->>JS: print_string(12) を呼ぶ（12 は文字列の長さ）
-    Note over JS: メモリから12バイトを取り出して、文字列に変える
+    WASM->>JS: print_string(100, 12) を呼ぶ（100 は開始位置、12 は長さ）
+    Note over JS: メモリの100番目から12バイトを取り出して、文字列に変える
 ```
 
 やりとりの方向は、2つあります。
@@ -62,6 +62,8 @@ sequenceDiagram
 | WebAssembly から JavaScript へ公開する | `(func (export "hello_world") ...)` | `instance.exports.hello_world()` で呼ぶ |
 
 `.wat` の `import` の名前と、JavaScript が渡すオブジェクトのキーは、一致している必要があります。合っていないと、読み込みの時点でエラーになります。
+
+メモリの位置と長さは、WebAssembly の側から JavaScript に渡します。JavaScript の側で「どこを読むか」を別に覚えておく書き方にすると、片方だけを変えたときに、黙って別の場所を読んでしまいます。
 
 ---
 
@@ -161,4 +163,5 @@ Docker Compose で、Node.js のコンテナを1つ使います。
 
 - **Web ブラウザで動かす形は、用意していません。** `.wasm` の読み込みに、Node.js のファイルの読み込み（`node:fs`）を使っています。ブラウザで動かす場合は、`src/shared/wasm.js` の読み込みの部分を、`fetch` に書き換える必要があります。
 - **`.wat` には、日本語のコメントを書けます。** ただし、変換のスクリプトは、ファイルをバイト列のまま変換のライブラリに渡しています。文字列に変えてから渡すと、日本語を含むファイルを正しく読めません（[scripts/build.js](../scripts/build.js) にコメントで書いてあります）。
-- **`.wat` を書き換えたら、変換が必要です。** `make run` と `make js/test` は、変換を先に行います。コンテナの中で `pnpm start` や `pnpm test` を直接使う場合は、先に `pnpm build` を実行してください。
+- **変換は、実行とテストの前に、自動で行われます。** `pnpm start` と `pnpm test` が、最初に変換を行うためです。変換元の `.wat` がなくなった `.wasm` は、このときに消されます。
+- **コンテナの中のプログラムは、root ではなく、一般ユーザー（`node`）で動きます。** 変換で作った `.wasm` などが、手元で消せないファイルにならないようにするためです。

@@ -29,11 +29,11 @@
 | コマンド | 内容 |
 | --- | --- |
 | `make run` | WebAssembly への変換を行ってから、プログラム（`src/main.js`）を実行します |
-| `make wasm/build` | `src/` の中の `.wat` を、すべて `.wasm` に変換します |
+| `make wasm/build` | `src/` の中の `.wat` を、すべて `.wasm` に変換します。変換元の `.wat` がなくなった `.wasm` は、消します |
 
 `.wasm` は、変換元の `.wat` と同じ場所に、同じ名前で作られます（`src/hello/hello.wat` から `src/hello/hello.wasm`）。
 
-`.wat` に書き間違いがあると、変換の時点で、ファイル名と行番号つきのエラーになります。
+`.wat` に書き間違いがあると、変換の時点で、ファイル名と行番号つきのエラーになります（読み方は、[Getting Started](./01_GETTING_STARTED.md) の「うまくいかないとき」を参照）。
 
 ---
 
@@ -56,8 +56,8 @@
 | コマンド | 内容 |
 | --- | --- |
 | `make js/add TARGET=<パッケージ名>` | 開発用のパッケージを追加します |
-| `make js/install` | `package.json` に書いたパッケージを、インストールします |
-| `make js/outdated` | 新しいバージョンが出ているパッケージを表示します |
+| `make js/install` | `pnpm-lock.yaml` の記録のとおりに、パッケージをインストールします |
+| `make js/outdated` | 新しいバージョンが出ているパッケージを表示します。何も表示されなければ、すべて最新です |
 
 例：`typescript` を追加する場合
 
@@ -78,4 +78,4 @@ $ make js/add TARGET=typescript
 | `make node/login` | コンテナのシェルに入ります。`exit` で抜けます |
 | `make node/repl` | Node.js の対話環境を開きます。`.exit` で抜けます |
 
-コンテナの中では、`pnpm` のコマンドを直接使えます（`pnpm build`、`pnpm start`、`pnpm test` など）。続けて何度も実行するときは、中に入ったほうが、コンテナの起動を待たずに済みます。
+コンテナの中では、`pnpm` のコマンドを直接使えます（`pnpm build`、`pnpm start`、`pnpm test` など）。`pnpm start` と `pnpm test` も、最初に変換を行います。続けて何度も実行するときは、中に入ったほうが、コンテナの起動を待たずに済みます。

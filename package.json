@@ -10,8 +10,8 @@
   },
   "scripts": {
     "build": "node scripts/build.js",
-    "start": "node src/main.js",
-    "test": "node --test",
+    "start": "node scripts/build.js && node src/main.js",
+    "test": "node scripts/build.js && node --test",
     "check": "eslint . && prettier --check .",
     "fix": "eslint --fix . && prettier --write ."
   },

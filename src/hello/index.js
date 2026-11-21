@@ -16,8 +16,8 @@ export const createHello = async (print) => {
     env: {
       memory,
       start_string_index: START_STRING_INDEX,
-      // WebAssembly から呼ばれる関数。線形メモリから文字列を取り出して、print に渡す。
-      print_string: (length) => print(readString(memory, START_STRING_INDEX, length)),
+      // WebAssembly から呼ばれる関数。線形メモリの指定された位置から文字列を取り出して、print に渡す。
+      print_string: (offset, length) => print(readString(memory, offset, length)),
     },
   });
 

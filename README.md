@@ -2,67 +2,78 @@
 
 WebAssembly（WAT、JavaScript）の技術検証と、プロジェクトのひな形を兼ねたリポジトリ。
 
-## 概要
+WebAssembly をテキスト形式（WAT）で書き、JavaScript（Node.js）から呼び出すときの土台を、すぐ動く状態でまとめています。新しいプロジェクトを始めるときのひな形として使うほか、WebAssembly の書き方を試す場所としても使います。
 
-| 項目 | 内容 |
+## Description
+
+- [Branch](#branch)
+- [Tool Versions](#tool-versions)
+- [Getting Started](#getting-started)
+- [Command](#command)
+- [Documents](#documents)
+
+---
+
+## Branch
+
+目的の違う内容を、ブランチで分けています。
+
+| ブランチ | 内容 | 使いみち |
+| --- | --- | --- |
+| [`main`](https://github.com/ike-keichan/sandbox-wasm) | 最小の形。WebAssembly が持つ文字列を、JavaScript で表示する `hello` だけ | 新しいプロジェクトの出発点にします |
+| [`example/add`](https://github.com/ike-keichan/sandbox-wasm/tree/example/add) | `main` に、2つの数を足す `add` を足した見本 | 引数と戻り値のある関数の、足し方の手本にします |
+
+`README.md` と、`readme/` の番号つきの文書は、どのブランチでも同じ内容です。`example/` で始まるブランチには、そのブランチの説明（`readme/EXAMPLE_*.md`）が入っています。
+
+---
+
+## Tool Versions
+
+| 役割 | 使っているもの | バージョン |
+| --- | --- | --- |
+| 実行環境 | Node.js | 26（長期サポート版） |
+| パッケージ管理 | pnpm | 12.21 |
+| WebAssembly への変換 | WABT（`wabt`） | 1.0.39 |
+| コードの検査 | ESLint | 10.15 |
+| コードの整形 | Prettier | 3.10 |
+| テスト | Node.js の標準の機能（`node:test`） | |
+
+Node.js は、Docker のコンテナの中で動きます。手元に必要なのは、Docker Desktop、make、Git だけです。
+
+正確なバージョンは、[package.json](./package.json)、`pnpm-lock.yaml`、[Dockerfile](./Dockerfile) に記録しています。
+
+---
+
+## Getting Started
+
+環境構築の手順は、[こちら](./readme/01_GETTING_STARTED.md)。
+
+手順を終えると、`make run` で、WebAssembly を呼び出すプログラムを実行できるようになります。
+
+---
+
+## Command
+
+主要なコマンドは、以下のとおりです。それ以外のコマンドの詳細は、[こちら](./readme/02_COMMAND.md)。
+
+| コマンド | 内容 |
 | --- | --- |
-| 題材 | WebAssembly のテキスト形式（WAT）と、JavaScript からの呼び出し |
-| 時期 | 2024年4月 |
-| 言語 | WebAssembly（テキスト形式）、JavaScript |
+| `make setup` | 環境を作ります（初回だけ） |
+| `make run` | WebAssembly への変換を行ってから、プログラムを実行します |
+| `make wasm/build` | `.wat` を `.wasm` に変換します |
+| `make js/test` | テストを実行します |
+| `make js/check` | コードを検査します |
+| `make js/fix` | 検査の指摘のうち、自動で直せるものを直します |
 
-WebAssembly のモジュールをテキスト形式（`.wat`）で書き、バイナリ（`.wasm`）に変換して、Node.js の JavaScript から読み込む方法を検証したものである。JavaScript の関数、変数、メモリを WebAssembly に渡す方法と、WebAssembly の関数を JavaScript から呼ぶ方法を試している。
+---
 
-## ディレクトリ構成
+## Documents
 
-| ディレクトリ・ファイル | 内容 |
+| 文書 | 内容 |
 | --- | --- |
-| `src/HelloWorld/index.wat` | JavaScript から受け取ったメモリに `hello world!` を書き込み、JavaScript の関数を呼んで表示させるモジュール |
-| `src/HelloWorld/index.wasm` | `index.wat` を変換したバイナリ |
-| `src/HelloWorld/index.js` | メモリと表示用の関数を渡して、モジュールを読み込む |
-| `src/Add/index.wat` | 2つの整数を足して返す関数 `add` を持つモジュール |
-| `src/Add/index.js` | モジュールを読み込み、`add` を呼ぶ |
-| `package.json`、`pnpm-lock.yaml` | 依存するパッケージと、そのバージョンの記録 |
-
-`src/Add/` の `index.wasm` は、リポジトリに入れていない。「実行方法」の変換の手順で作る。
-
-## 実行環境
-
-当時使っていた環境のうち、実行に必要なソフトウェアを挙げる。バージョンは、リポジトリに記録が残っている値である。
-
-| ソフトウェア | バージョン | 用途 | 補足 |
-| --- | --- | --- | --- |
-| macOS | 14 Sonoma | OS | |
-| Node.js | 20.11.1 | JavaScript の実行 | `package.json` に記録 |
-| pnpm | 8.15.5 | パッケージのインストールとスクリプトの実行 | `package.json` に記録 |
-| wat-wasm | 1.0.43 | テキスト形式からバイナリへの変換（`wat2wasm` コマンド） | `pnpm-lock.yaml` に記録 |
-
-## セットアップ
-
-次の手順で、実行に必要なソフトウェアを用意する。当時より新しいバージョンでの動作は確認していないので、動かない場合は「実行環境」の表に近いバージョンを使う。
-
-1. [Node.js](https://nodejs.org/) をインストールする。`node --version` でバージョンが表示されれば使える。
-2. [pnpm](https://pnpm.io/ja/installation) をインストールする。`pnpm --version` でバージョンが表示されれば使える。
-3. 依存するパッケージをインストールする。`node_modules` はリポジトリに入れていないので、この手順が必要である。
-
-   ```sh
-   pnpm install
-   ```
-
-## 実行方法
-
-テキスト形式（`.wat`）を、バイナリ（`.wasm`）に変換する。
-
-```sh
-pnpm compile
-```
-
-JavaScript から読み込んで実行する。
-
-```sh
-node src/HelloWorld/index.js
-node src/Add/index.js
-```
-
-## 備考
-
-JavaScript の側は書きかけで、そのままでは実行できない。モジュールの読み込みが終わるのを待たずに関数を呼んでいること、WebAssembly が公開している関数の名前（`hello_world`）と、JavaScript が呼んでいる名前（`helloWorld`）が違うことが理由である。WebAssembly のテキスト形式の書き方の記録として残している。
+| [Getting Started](./readme/01_GETTING_STARTED.md) | 環境構築の手順。必要なソフトウェアの用意から、動作の確認、うまくいかないときの対処まで |
+| [Command](./readme/02_COMMAND.md) | すべてのコマンドの説明 |
+| [Architecture](./readme/03_ARCHITECTURE.md) | 全体の流れ、JavaScript と WebAssembly のやりとり、プログラムの分け方、ディレクトリ構成、テストの仕組み |
+| [Template](./readme/04_TEMPLATE.md) | ひな形として使う手順。自分のリポジトリの作り方、名前の変え方、機能の足し方 |
+| [Development](./readme/05_DEVELOPMENT.md) | このリポジトリ自体を更新するときの決まり。ブランチ、作業の流れ、依存の更新、見本のブランチの保ち方 |
+| [CLAUDE.md](./CLAUDE.md) | コードと文書の書き方の細かい決まり。Claude Code に作業を頼むときにも読み込まれます |

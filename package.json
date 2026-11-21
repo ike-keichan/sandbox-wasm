@@ -1,17 +1,26 @@
 {
-  "name": "wasm-for-js-sandbox",
-  "version": "1.0.0",
-  "description": "",
-  "author": "Keisuke Ikeda",
-  "license": "ISC",
+  "name": "sandbox-wasm",
+  "version": "0.1.0",
+  "description": "JavaScript から WebAssembly を呼び出すプロジェクトのひな形",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.21.0",
   "engines": {
-    "node": "20.11.1",
-    "pnpm": "8.15.5"
+    "node": ">=26"
   },
   "scripts": {
-    "compile": "wat2wasm ./src/**/*.wat"
+    "build": "node scripts/build.js",
+    "start": "node src/main.js",
+    "test": "node --test",
+    "check": "eslint . && prettier --check .",
+    "fix": "eslint --fix . && prettier --write ."
   },
-  "dependencies": {
-    "wat-wasm": "^1.0.43"
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.15.0",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.14.0",
+    "prettier": "3.10.1",
+    "wabt": "1.0.39"
   }
 }

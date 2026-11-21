@@ -1,4 +1,4 @@
-# wasm-for-js-sandbox
+# sandbox-wasm
 
 JavaScript から WebAssembly を呼び出す練習用のプロジェクト。
 

@@ -41,3 +41,6 @@ next-env.d.ts
 
 # cache
 .DS_Store
+
+# WebAssembly（.wat から make wasm/build で作る）
+*.wasm

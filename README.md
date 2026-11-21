@@ -31,7 +31,7 @@ WebAssembly をテキスト形式（WAT）で書き、JavaScript（Node.js）か
 
 | 役割 | 使っているもの | バージョン |
 | --- | --- | --- |
-| 実行環境 | Node.js | 26（長期サポート版） |
+| 実行環境 | Node.js | 26（LTS） |
 | パッケージ管理 | pnpm | 12.21 |
 | WebAssembly への変換 | WABT（`wabt`） | 1.0.39 |
 | コードの検査 | ESLint | 10.15 |

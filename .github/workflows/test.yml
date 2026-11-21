@@ -1,0 +1,22 @@
+name: Test
+
+on:
+  push:
+    branches: [main, example/**]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the container, install the packages and build the WebAssembly
+        run: make setup
+      - name: Check the code
+        run: make js/check
+      - name: Run the tests
+        run: make js/test
+      - name: Run the program
+        run: make run

@@ -1,0 +1,36 @@
+version: 2
+updates:
+  # JavaScript のパッケージ（package.json、pnpm-lock.yaml）
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: Asia/Tokyo
+    groups:
+      javascript:
+        patterns: ['*']
+  # Node.js のイメージ（Dockerfile）
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: Asia/Tokyo
+    ignore:
+      # Node.js は長期サポート版を使う。メジャーバージョンの更新は、手で行う。
+      - dependency-name: node
+        update-types: ['version-update:semver-major']
+  # GitHub Actions のアクション
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: Asia/Tokyo
+    groups:
+      actions:
+        patterns: ['*']

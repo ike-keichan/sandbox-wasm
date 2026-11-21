@@ -1,6 +1,6 @@
 # sandbox-wasm
 
-JavaScript から WebAssembly を呼び出す方法の技術検証と、プロジェクトのひな形を兼ねたリポジトリ。
+WebAssembly（WAT、JavaScript）の技術検証と、プロジェクトのひな形を兼ねたリポジトリ。
 
 ## 概要
 

@@ -1,5 +1,9 @@
 .PHONY: setup build down run wasm/build js/test js/check js/fix js/install js/add js/outdated node/login node/repl
 
+# コンテナを、手元のパソコンと同じユーザーで動かすために、ユーザーの番号を渡す（docker-compose.yml の user を参照）。
+export HOST_UID := $(shell id -u)
+export HOST_GID := $(shell id -g)
+
 ## コンテナ操作系
 # セットアップ
 setup:
@@ -16,7 +20,7 @@ down:
 
 ## 実行系
 # プログラムの実行（WebAssembly への変換を含む）
-run: wasm/build
+run:
 	docker compose run --rm app pnpm start
 # WebAssembly への変換（.wat から .wasm を作る）
 wasm/build:
@@ -25,7 +29,7 @@ wasm/build:
 
 ## JavaScript 操作系
 # テスト（WebAssembly への変換を含む）
-js/test: wasm/build
+js/test:
 	docker compose run --rm app pnpm test
 # コードチェック
 js/check:
@@ -33,15 +37,16 @@ js/check:
 # コード修正
 js/fix:
 	docker compose run --rm app pnpm fix
-# パッケージのインストール
+# パッケージのインストール（pnpm-lock.yaml のとおりに入れる）
 js/install:
-	docker compose run --rm app pnpm install
+	docker compose run --rm app pnpm install --frozen-lockfile
 # パッケージの追加（開発用）
 js/add:
 	docker compose run --rm app pnpm add --save-dev --save-exact $(TARGET)
 # 新しいバージョンがあるパッケージの確認
+# 新しいバージョンがあると、pnpm は失敗の扱いで終わる。make のエラーにしないように、先頭に - を付けている。
 js/outdated:
-	docker compose run --rm app pnpm outdated
+	-docker compose run --rm app pnpm outdated
 
 
 ## コンソール系

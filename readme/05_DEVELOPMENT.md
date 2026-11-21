@@ -128,7 +128,7 @@ $ git switch main
 | Node.js のイメージ | `Dockerfile` |
 | GitHub Actions のアクション | `.github/workflows/` |
 
-1. 自動テストが緑なら、そのままマージします。
+1. 自動テストが緑なら、そのままマージします。ただし、Node.js のイメージ（`Dockerfile`）の更新の場合は、マージの前に、`.node-version` も同じバージョンに直します（プルリクエストのブランチに、コミットを足します）。Dependabot は、`Dockerfile` しか書き換えないためです。
 2. 赤の場合は、新しい版で書き方が変わっていることが多いです。プルリクエストを閉じて、`feature/` のブランチで、更新と修正をまとめて行います（「4-2」を参照）。
 3. マージしたら、「3-6」の手順で、`example/` のブランチに取り込みます。
 
@@ -219,7 +219,7 @@ $ make js/test
 | 対象 | 方針 | 上げるときに直す場所 |
 | --- | --- | --- |
 | Node.js | 長期サポート版（LTS）を使います。偶数のバージョンが、長期サポート版になります。Dependabot は、メジャーバージョンの更新を知らせない設定にしています | `Dockerfile` のイメージ、`.node-version`、`package.json` の `engines` の3か所 |
-| pnpm | 版を固定しています | `Dockerfile` の `pnpm@...` と、`package.json` の `packageManager` の2か所 |
+| pnpm | 版を固定しています。Dependabot の対象ではないので、手で上げます | `Dockerfile` の `pnpm@...` と、`package.json` の `packageManager` の2か所 |
 | JavaScript のパッケージ | 版を固定しています。更新は、Dependabot に任せます | `package.json` |
 
 バージョンを上げたら、[README](../README.md) の「Tool Versions」の表も直します。

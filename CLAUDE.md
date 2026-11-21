@@ -88,7 +88,7 @@ make run
   | `local.get`、`local.set` | `get_local`、`set_local` |
   | `global.get`、`global.set` | `get_global`、`set_global` |
 
-- 関数、引数、変数、グローバルには、`$` で始まる名前を付ける。番号（`local.get 0`）で参照しない。
+- 引数、変数、グローバル、モジュールの中から呼ぶ関数には、`$` で始まる名前を付ける。番号（`local.get 0`）で参照しない。公開するだけで、モジュールの中から呼ばない関数は、`export` の名前だけでよい。
 - 名前は、小文字とアンダースコアで書く（`$start_string_index`、`"hello_world"`）。
 - 公開する関数は、定義と同じ場所で `export` する（`(func (export "add") ...)`）。
 - JavaScript から受け取るものは、`"env"` という名前でまとめる（`(import "env" "memory" ...)`）。
@@ -104,6 +104,7 @@ make run
 - 関数は、アロー関数を `const` に入れて定義する。
 - `index.js` が公開する関数の名前は、JavaScript の書き方にそろえる（`helloWorld`）。WebAssembly の側の名前（`hello_world`）や、メモリの位置を、外に見せない。
 - モジュールを読み込む関数の名前は、`create<機能名>` にする（`createHello`）。非同期の関数にして、呼ぶ側は `await` する。
+- 文字列のように、メモリを通して渡すものは、WebAssembly の側から、位置と長さの両方を渡す。JavaScript の側で、位置を別に覚えておかない。
 - `.wasm` の読み込みは、`src/shared/wasm.js` の `instantiate` を使う。`.wasm` の場所は、`new URL('./<名前>.wasm', import.meta.url)` で、そのファイルからの相対で指定する。
 - 画面への表示（`console.log`）は、`src/main.js` と `scripts/` にだけ書く。機能の `index.js` では、表示する代わりに、呼ぶ側から関数を受け取る。こうすると、テストで確かめられる。
 - 意味のある数値には、名前を付ける（`START_STRING_INDEX`）。
@@ -127,7 +128,7 @@ make run
 
 - 書式は Prettier、規則は ESLint に従う。手で整えず、`make js/fix` を使う。
 - 規則を無効にする場合（`eslint-disable`）は、理由が分かるコメントを添える。
-- Prettier の対象から、`.wat` と Markdown は外している。
+- Prettier の対象は、JavaScript、JSON、YAML である。Markdown は、`.prettierignore` で外している。`.wat` は、Prettier が扱えない。
 
 ## テストの書き方
 
@@ -137,6 +138,7 @@ make run
 - テストの名前は、日本語で、「何が、どうなるか」を書く（例：`add は、2つの数を足した結果を返す`）。
 - ふつうの値だけでなく、境目の値（0、負の数、型の上限）も確かめる。WebAssembly の数値は、型ごとに範囲が決まっていて、超えると結果が変わる。
 - 機能を足したら、テストも足す。
+- 件数だけでなく、中身を確かめる（`assert.equal(printed.length, 2)` ではなく、`assert.deepEqual(printed, [...])`）。
 
 ## 設定ファイルを変えるとき
 

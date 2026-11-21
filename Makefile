@@ -1,5 +1,9 @@
 .PHONY: setup build down run wasm/build js/test js/check js/fix js/install js/add js/outdated node/login node/repl
 
+# コンテナを、手元のパソコンと同じユーザーで動かすために、ユーザーの番号を渡す（docker-compose.yml の user を参照）。
+export HOST_UID := $(shell id -u)
+export HOST_GID := $(shell id -g)
+
 ## コンテナ操作系
 # セットアップ
 setup:
